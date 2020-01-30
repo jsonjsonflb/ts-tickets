@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "esnext" /* esnext */,
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    /* Module Resolution Options */
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@/*": ["src/*"]
+    } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
+    "types": [
+      "node"
+    ] /* Type declaration files to be included in compilation. */,
+    "typeRoots": ["./src/typings"]
+  }
+}
