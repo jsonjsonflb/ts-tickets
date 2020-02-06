@@ -10,3 +10,7 @@ export function createAction(
     payload: payload || {}
   };
 }
+
+export const concatClass = (...names: string[]) => {
+  return names.join(' ');
+};

@@ -1,9 +1,9 @@
-import './scss/index.scss'
+import './scss/index.scss';
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import { AppStoreType } from '@/reducers/test';
-import {helpers} from '@/utils'
+import { connect } from 'react-redux';
+// import { AppStoreType } from '@/reducers/test';
+import { helpers } from '@/utils';
 
 export interface ContainerPropsInterface<T> {
   dispatch(action: { type: string; payload?: any }): void;
@@ -15,17 +15,16 @@ export interface ContainerStateInterface {
   [random: string]: any;
 }
 
-
 // @connect((state: any) => ({
 //   state: state
 // }))
-class App extends React.PureComponent<ContainerPropsInterface<AppStoreType>,ContainerStateInterface> {
-
-
-
+class App extends React.PureComponent<
+  ContainerPropsInterface<ContainerStateInterface>,
+  ContainerStateInterface
+> {
   public addNum = () => {
-    this.props.dispatch(helpers.createAction('test/add'))
-  }
+    this.props.dispatch(helpers.createAction('test/add'));
+  };
 
   public render() {
     return (
@@ -37,13 +36,11 @@ class App extends React.PureComponent<ContainerPropsInterface<AppStoreType>,Cont
   }
 }
 
-const mapProps = (state:any) => {
+const mapProps = (state: any) => {
   return {
     state: state.test,
-    all:state
+    all: state
   };
-}
+};
 
 export default connect(mapProps)(App);
-
-

@@ -6,7 +6,7 @@ export interface ActionType {
 
 // 组件容器
 export interface ContainerPropsInterface<T> {
-  dispatch(action: { type: string; payload?: any }): void;
+  dispatch(action: any): any;
   state: T;
   [random: string]: any;
 }
@@ -14,4 +14,8 @@ export interface ContainerPropsInterface<T> {
 // 跳过检查
 export interface SkipCheck {
   [random: string]: any;
+}
+
+export interface SkipFn {
+  (dispatch?: any, getState?: any): void;
 }
