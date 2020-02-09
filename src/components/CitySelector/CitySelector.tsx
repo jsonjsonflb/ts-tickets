@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, memo } from 'react';
+import React, { useState, useMemo, useEffect, memo, useCallback } from 'react';
 import styles from './CitySelector.scss';
 import { helpers } from '@/utils';
 
@@ -44,6 +44,27 @@ const CitySection = memo(function CitySection(props: CitySectionTypes) {
   );
 });
 
+// 锚点组件
+interface AlphaIndexProps {
+  alpha: string;
+  onClick: (props: any) => void;
+}
+const AlphaIndex = memo((props: AlphaIndexProps) => {
+  const { alpha, onClick } = props;
+  return (
+    <i className={styles.city_index_item} onClick={() => onClick(alpha)}>
+      {alpha}
+    </i>
+  );
+});
+
+/**
+ * 生成26个字母的数组
+ */
+const alphabet = Array.from(new Array(26), (ele, index) => {
+  return String.fromCharCode(65 + index);
+});
+
 /**
  * 列表组件
  */
@@ -52,7 +73,7 @@ interface CityListTypes {
   [random: string]: any;
 }
 const CityList = memo(function CityList(props: CityListTypes) {
-  const { sections, onSelect } = props;
+  const { sections, onSelect, toAlpha } = props;
 
   return (
     <div className={styles.city_list}>
@@ -68,7 +89,79 @@ const CityList = memo(function CityList(props: CityListTypes) {
           );
         })}
       </div>
-      <div className={styles.city_index}></div>
+      <div className={styles.city_index}>
+        {alphabet.map(item => (
+          <AlphaIndex key={item} alpha={item} onClick={toAlpha} />
+        ))}
+      </div>
+    </div>
+  );
+});
+
+/**
+ * 搜索建议选项
+ */
+// interface SuggestItemProps {
+//   name: string;
+//   onClick: (props: any) => void;
+// }
+// const SuggestItem = memo((props: SuggestItemProps) => {
+//   const { name, onClick } = props;
+
+//   return (
+//     <li className={styles.city_suggest_li} onClick={() => onClick(name)}>
+//       {name}
+//     </li>
+//   );
+// });
+
+/**
+ * 搜索栏
+ */
+interface SuggestProps {
+  searchKey: string;
+  onSelect: (props: any) => void;
+}
+const Suggest = memo((props: SuggestProps) => {
+  const { searchKey, onSelect } = props;
+
+  const [result, setResult] = useState([]);
+
+  useEffect(() => {
+    fetch(
+      'http://localhost:5555/rest/search?key=' + encodeURIComponent(searchKey)
+    )
+      .then(res => res.json())
+      .then(data => {
+        const { result, searchKey: sKey } = data;
+        if (sKey === searchKey) {
+          setResult(result);
+        }
+      });
+  }, [searchKey]);
+
+  // 过滤结果，
+  const fallBackResult = useMemo(() => {
+    if (result.length) {
+      return result;
+    } else {
+      return [{ display: searchKey }];
+    }
+  }, [searchKey, result]);
+
+  return (
+    <div className={styles.city_suggest}>
+      <ul className={styles.city_suggest_ul}>
+        {fallBackResult.map((item: any, index: number) => (
+          <li
+            key={index}
+            className={styles.city_suggest_li}
+            onClick={() => onSelect(item.display)}
+          >
+            {item.display}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 });
@@ -100,6 +193,11 @@ export default function CitySelector(props: propsTypes) {
     }
   }, [show, cityData, isLoading, fetchData]);
 
+  // 跳转至锚点
+  const toAlpha = useCallback((alpha: string) => {
+    document.querySelector(`[data-cate='${alpha}']`).scrollIntoView();
+  }, []);
+
   // 渲染列表
   const outputCitySections = () => {
     if (isLoading) {
@@ -111,7 +209,7 @@ export default function CitySelector(props: propsTypes) {
         <CityList
           sections={cityData.cityList}
           onSelect={onSelect}
-          // toAlpha={toAlpha}
+          toAlpha={toAlpha}
         />
       );
     }
@@ -163,6 +261,15 @@ export default function CitySelector(props: propsTypes) {
           &#xf063;
         </i>
       </div>
+      {Boolean(key) && (
+        <Suggest
+          searchKey={searchKey}
+          onSelect={key => {
+            // 选择城市的回调
+            onSelect(key);
+          }}
+        />
+      )}
       {outputCitySections()}
     </div>
   );
