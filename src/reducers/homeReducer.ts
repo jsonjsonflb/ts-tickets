@@ -8,7 +8,8 @@ import {
   ACTION_SET_CITYDATA,
   ACTION_SET_ISLOADINGCITYDATA,
   ACTION_SET_ISDATESELECTVISIBLE,
-  ACTION_SET_HIGHSPEED
+  ACTION_SET_HIGHSPEED,
+  ACTION_SET_DEPARTDATE
 } from '@/actions/homeActions';
 
 export const initialState: types.SkipCheck = {
@@ -64,6 +65,10 @@ export default (state: any = initialState, action: types.ActionType) => {
         highSpeed: action.payload.highSpeed
       });
 
+    case ACTION_SET_DEPARTDATE:
+      return _.assign({}, state, {
+        departDate: action.payload.departDate
+      });
     default:
       return state;
   }

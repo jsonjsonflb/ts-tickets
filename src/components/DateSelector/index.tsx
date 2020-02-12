@@ -1,18 +1,56 @@
 import React from 'react';
 import { helpers } from '@/utils';
-import styles from './index.scss';
+import styles from './DateSelector.scss';
 import Header from '@/components/Header';
+
+/**
+ * 日历天
+ */
+const Day = (props: any) => {
+  const { day, onSelect } = props;
+
+  if (!day) {
+    return <td className={styles.null}></td>;
+  }
+
+  const classes = [];
+
+  const now = helpers.h0();
+
+  if (day < now) {
+    classes.push(styles.disabled);
+  }
+
+  if ([6, 0].includes(new Date(day).getDay())) {
+    classes.push(styles.weekend);
+  }
+
+  const dateString = now === day ? '今天' : new Date(day).getDate();
+
+  return (
+    <td
+      className={helpers.concatClass(...classes)}
+      onClick={() => onSelect(day)}
+    >
+      {dateString}
+    </td>
+  );
+};
 
 /**
  * 日历周
  * @param props
  */
-function Week(props: any) {
+interface WeekPropsTypes {
+  days: any[];
+  onSelect?: (props: any) => void;
+}
+function Week(props: WeekPropsTypes) {
   const { days, onSelect } = props;
   return (
     <tr className={styles.date_table_days}>
       {days.map((day: any, idx: number) => {
-        return <div key={idx}>{day ? '1' : ''}</div>;
+        return <Day key={idx} day={day} onSelect={onSelect} />;
       })}
     </tr>
   );
@@ -22,7 +60,7 @@ function Week(props: any) {
  *  @startTimeInMonth 本月第一天的 0 时刻
  */
 const Month = (props: any) => {
-  const { startTimeInMonth } = props;
+  const { startTimeInMonth, onSelect } = props;
   const startDay = new Date(startTimeInMonth);
   const currentDay = new Date(startTimeInMonth);
 
@@ -75,7 +113,9 @@ const Month = (props: any) => {
           <th className={styles.weekend}>周六</th>
           <th className={styles.weekend}>周日</th>
         </tr>
-        <Week days={days} />
+        {weeks.map((week, index) => (
+          <Week key={index} days={week} onSelect={onSelect} />
+        ))}
       </tbody>
     </table>
   );
@@ -86,7 +126,7 @@ const Month = (props: any) => {
  */
 interface propsType {
   show: boolean;
-  onSelect: () => void;
+  onSelect: (props: any) => void;
   onBack: () => void;
 }
 
@@ -108,13 +148,15 @@ export default (props: propsType) => {
     <div
       className={helpers.concatClass(
         styles.date_selector,
-        show ? styles.hidden : ''
+        show ? '' : styles.hidden
       )}
     >
       <Header title={'日期选择'} onBack={onBack} />
       <div className={styles.date_selector_tables}>
         {monthSequence.map((month, index) => {
-          return <Month key={index} startTimeInMonth={month} />;
+          return (
+            <Month key={index} onSelect={onSelect} startTimeInMonth={month} />
+          );
         })}
       </div>
     </div>

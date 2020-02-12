@@ -11,6 +11,7 @@ export const ACTION_SET_CITYDATA = nameSpace + 'ASET_CITYDATA';
 export const ACTION_SET_ISLOADINGCITYDATA = nameSpace + 'SET_ISLOADINGCITYDATA';
 export const ACTION_SET_ISDATESELECTVISIBLE =
   nameSpace + 'SET_ISDATESELECTVISIBLE';
+export const ACTION_SET_DEPARTDATE = nameSpace + 'SET_DEPARTDATE';
 export const ACTION_SET_HIGHSPEED = nameSpace + 'SET_HIGHSPEED';
 
 export const setFrom = (from: string) => {
@@ -40,9 +41,9 @@ export const setCityData = (cityData: any) => {
 // 是否是高铁
 export const toggleHighSpeed = () => {
   return (dispatch: any, getState: any) => {
-    const { highSpeed } = getState().home.home;
+    const { highSpeed } = getState().home;
     dispatch(
-      helpers.createAction(ACTION_SET_CITYDATA, {
+      helpers.createAction(ACTION_SET_HIGHSPEED, {
         highSpeed: !highSpeed
       })
     );
@@ -102,6 +103,12 @@ export const showDateSelector = () => {
 export const hideDateSelector = () => {
   return helpers.createAction(ACTION_SET_ISDATESELECTVISIBLE, {
     isDateSelectVisible: false
+  });
+};
+
+export const setDepartDate = (day: string) => {
+  return helpers.createAction(ACTION_SET_DEPARTDATE, {
+    departDate: day
   });
 };
 

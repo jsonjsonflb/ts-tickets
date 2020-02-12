@@ -10,9 +10,11 @@ import {
   fetchData,
   setSelectedCity,
   showDateSelector,
-  hideDateSelector
+  hideDateSelector,
+  setDepartDate,
+  toggleHighSpeed
 } from '@/actions/homeActions';
-import { types } from '@/utils';
+import { types, helpers } from '@/utils';
 import styles from './index.scss';
 
 const Header = Loadable({
@@ -42,6 +44,9 @@ const DateSelector = Loadable({
   loading: Loading
 });
 
+import HighSpeed from '@/routes/HomePage/HighSpeed';
+import Submit from '@/routes/HomePage/Submit/Submit';
+
 function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
   const {
     from,
@@ -50,7 +55,8 @@ function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
     cityData,
     isLoadingCityData,
     departDate,
-    isDateSelectVisible
+    isDateSelectVisible,
+    highSpeed
   } = props.state;
   const { dispatch } = props;
 
@@ -95,11 +101,37 @@ function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
     );
   }, [dispatch]);
 
+  // 时间选择回调
   const dateSelectorCbs = useMemo(() => {
     return bindActionCreators(
       {
-        onBack: hideDateSelector,
-        onSelect: () => {}
+        onBack: hideDateSelector
+      },
+      dispatch
+    );
+  }, [dispatch]);
+
+  // 日期选择
+  const onSelectDate = useCallback(
+    day => {
+      if (!day) {
+        return;
+      }
+      if (day < helpers.h0()) {
+        return;
+      }
+
+      dispatch(setDepartDate(day));
+      dispatch(hideDateSelector());
+    },
+    [dispatch]
+  );
+
+  // 是否高铁
+  const highSpeedCbs = useMemo(() => {
+    return bindActionCreators(
+      {
+        toggle: toggleHighSpeed
       },
       dispatch
     );
@@ -108,7 +140,7 @@ function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
   return (
     <div>
       <Header title={'火车车票'} />
-      <form className={styles.form} action="">
+      <form className={styles.form} action="index.html">
         <Journey
           // showCitySelector={doShowCitySelector}
           // exchangeFromTo={doExchangeFromTo}
@@ -117,6 +149,8 @@ function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
           to={to}
         />
         <DepartDate {...departDateCbs} time={departDate} />
+        <HighSpeed highSpeed={highSpeed} {...highSpeedCbs} />
+        <Submit />
       </form>
       <CitySelector
         show={isCitySelectVisible}
@@ -124,7 +158,11 @@ function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
         isLoading={isLoadingCityData}
         {...citySelectorCbs}
       />
-      <DateSelector show={isDateSelectVisible} {...dateSelectorCbs} />
+      <DateSelector
+        show={isDateSelectVisible}
+        {...dateSelectorCbs}
+        onSelect={onSelectDate}
+      />
     </div>
   );
 }
