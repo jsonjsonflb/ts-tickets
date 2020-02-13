@@ -1,25 +1,13 @@
-import * as React from 'react';
-import { types } from '@/utils';
-import { connect } from 'react-redux';
-import Router from '@/routes/router';
+import * as React from "react";
+import Router from "@/routes/router";
+import { hot } from "react-hot-loader/root";
 
-class App extends React.Component<
-  types.ContainerPropsInterface<types.SkipCheck>,
-  types.SkipCheck
-> {
-  public render() {
-    return (
-      <div>
-        <Router />
-      </div>
-    );
-  }
-}
-
-const mapState = (state: any) => {
-  return {
-    state
-  };
+const App = () => {
+  return (
+    <div>
+      <Router />
+    </div>
+  );
 };
 
-export default connect(mapState)(App);
+export default hot(App);

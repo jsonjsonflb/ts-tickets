@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
 const merge = require('webpack-merge');
@@ -13,9 +14,10 @@ function resolve(dir) {
 }
 
 const config = {
-  entry: '../src/index.tsx',
+  // entry: '../src/index.tsx',
+  entry: ['react-hot-loader/patch', '../src/index.tsx'],
   output: {
-    filename: 'bundle.[contentHash:6].js',
+    filename: 'bundle.[hash:6].js',
     path: path.resolve(__dirname, '../dist'),
     chunkFilename: '[id].[contentHash:6].js'
   },
@@ -31,6 +33,9 @@ const config = {
     new CopyPlugin([
       { from: path.resolve(__dirname, '../src/lib'), to: 'lib' }
     ]),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
     new CleanWebpackPlugin()
   ],
   module: {
@@ -95,7 +100,8 @@ const config = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@': resolve('src')
+      '@': resolve('src'),
+      'react-dom': '@hot-loader/react-dom'
     }
   },
   optimization: {
