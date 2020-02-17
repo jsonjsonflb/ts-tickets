@@ -15,7 +15,7 @@ function resolve(dir) {
 
 const config = {
   // entry: '../src/index.tsx',
-  entry: ['react-hot-loader/patch', '../src/index.tsx'],
+  entry: ['react-hot-loader/patch', '../src'],
   output: {
     filename: 'bundle.[hash:6].js',
     path: path.resolve(__dirname, '../dist'),
