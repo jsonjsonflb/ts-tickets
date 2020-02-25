@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Loadable from 'react-loadable';
 import Loading from '@/components/Loading';
+import Banner from '@/routes/HomePage/Banner/Banner';
 import {
   showCitySelector,
   exchangeFromTo,
@@ -140,6 +141,7 @@ function HomePage(props: types.ContainerPropsInterface<types.SkipCheck>) {
   return (
     <div>
       <Header title={'火车车票'} />
+      <Banner />
       <form className={styles.form} action="index.html">
         <Journey
           // showCitySelector={doShowCitySelector}

@@ -140,7 +140,7 @@ export const fetchData = (params: any) => {
     }
 
     dispatch(setIsLoadingCityData(true));
-    fetch('http://localhost:5555/rest/cities?_' + Date.now())
+    fetch('http://localhost:4444/rest/cities?_' + Date.now())
       .then(res => res.json())
       .then(cityData => {
         dispatch(setCityData(cityData));
